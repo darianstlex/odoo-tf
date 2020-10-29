@@ -27,7 +27,7 @@ resource "aws_dynamodb_table" "tflocks" {
 #------------------------------------------------------
 # GENERATED FOR THE INFRA BUILD ORCHESTRATED LATER ON
 #------------------------------------------------------
-resource "local_file" "state_file" {
+resource "local_file" "state_file_odoo" {
   file_permission = "0600"
   content = <<FILE
 terraform {
@@ -40,34 +40,34 @@ terraform {
   }
 }
 FILE
-  filename = "${path.module}/../state.tf"
+  filename = "${path.module}/../odoo/state.tf"
 }
 
-resource "local_file" "provider_file" {
+resource "local_file" "provider_file_odoo" {
   file_permission = "0600"
   content = <<FILE
 provider "aws" {
-  allowed_account_ids = ["${var.account}"]
-  region = "${var.infra_region}"
+  allowed_account_ids = [var.account]
+  region = var.infra_region
   version = "${var.aws_provider_version}"
 
   max_retries = 2
 }
 FILE
-  filename = "${path.module}/../provider.tf"
+  filename = "${path.module}/../odoo/provider.tf"
 }
 
-resource "local_file" "versions_file" {
+resource "local_file" "versions_file_odoo" {
   file_permission = "0600"
   content = <<FILE
 terraform {
   required_version = "${var.terraform_version}"
 }
 FILE
-  filename = "${path.module}/../versions.tf"
+  filename = "${path.module}/../odoo/versions.tf"
 }
 
-resource "local_file" "variables_file" {
+resource "local_file" "variables_file_odoo" {
   file_permission = "0600"
   content = <<FILE
 variable "infra_region" {
@@ -85,8 +85,12 @@ variable "account" {
   default = "${var.account}"
 }
 
+variable "aws_provider_version" {
+  type    = string
+  default = "${var.aws_provider_version}"
+}
 FILE
-  filename = "${path.module}/../variables.tf"
+  filename = "${path.module}/../odoo/variables.tf"
 }
 
 
