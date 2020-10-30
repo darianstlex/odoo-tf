@@ -1,4 +1,4 @@
-resource "aws_s3_bucket" "tfstate" {
+resource aws_s3_bucket tfstate {
   bucket = "tfstate-${var.aws_account}-${var.aws_region}"
 
   versioning {
@@ -13,7 +13,7 @@ resource "aws_s3_bucket" "tfstate" {
   }
 }
 
-resource "aws_dynamodb_table" "tflocks" {
+resource aws_dynamodb_table tflocks {
   name = "tflock-${var.aws_account}-${var.aws_region}"
   billing_mode = "PAY_PER_REQUEST"
   hash_key = "LockID"
@@ -27,7 +27,7 @@ resource "aws_dynamodb_table" "tflocks" {
 #------------------------------------------------------
 # GENERATED FOR THE INFRA BUILD ORCHESTRATED LATER ON
 #------------------------------------------------------
-resource "local_file" "state_file" {
+resource local_file state_file {
   file_permission = "0600"
   content = <<FILE
 terraform {
@@ -43,7 +43,7 @@ FILE
   filename = "${path.module}/../${var.stack_name}/state.tf"
 }
 
-resource "local_file" "provider_file" {
+resource local_file provider_file {
   file_permission = "0600"
   content = <<FILE
 provider "aws" {
@@ -57,7 +57,7 @@ FILE
   filename = "${path.module}/../${var.stack_name}/provider.tf"
 }
 
-resource "local_file" "versions_file" {
+resource local_file versions_file {
   file_permission = "0600"
   content = <<FILE
 terraform {
@@ -67,7 +67,7 @@ FILE
   filename = "${path.module}/../${var.stack_name}/versions.tf"
 }
 
-resource "local_file" "variables_file" {
+resource local_file variables_file {
   file_permission = "0600"
   content = <<FILE
 variable "terraform_version" {
@@ -97,10 +97,10 @@ FILE
 #------------------------------------------------------
 # OUTPUTS
 #------------------------------------------------------
-output "tfstate_bucket_name" {
+output tfstate_bucket_name {
   value = aws_s3_bucket.tfstate.arn
 }
 
-output "tflocks_table" {
+output tflocks_table {
   value = aws_dynamodb_table.tflocks.arn
 }
