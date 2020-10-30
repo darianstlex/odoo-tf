@@ -1,4 +1,4 @@
-resource "local_file" "variables_file_odoo" {
+resource "local_file" "variables_file" {
   file_permission = "0600"
   content = <<FILE
 variable "aws_account" {
