@@ -2,7 +2,7 @@
 export TF_VAR_aws_account=
 export TF_VAR_aws_region=
 
-# curent stack
+# current stack
 export TF_VAR_stack_name=
 
 # versions
