@@ -72,7 +72,7 @@ resource "local_file" "variables_file" {
   content = <<FILE
 variable "terraform_version" {
   type = string
-  default = ">= 0.12.0, < 0.14.0"
+  default = "${var.terraform_version}"
 }
 
 variable "aws_account" {
