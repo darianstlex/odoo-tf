@@ -1,5 +1,5 @@
 resource "aws_s3_bucket" "tfstate" {
-  bucket = "tfstate-${var.account}-${var.infra_region}"
+  bucket = "tfstate-${var.aws_account}-${var.aws_region}"
 
   versioning {
     enabled = true
@@ -14,9 +14,9 @@ resource "aws_s3_bucket" "tfstate" {
 }
 
 resource "aws_dynamodb_table" "tflocks" {
-  name         = "tflock-${var.account}-${var.infra_region}"
+  name = "tflock-${var.aws_account}-${var.aws_region}"
   billing_mode = "PAY_PER_REQUEST"
-  hash_key     = "LockID"
+  hash_key = "LockID"
   attribute {
     name = "LockID"
     type = "S"
@@ -27,72 +27,33 @@ resource "aws_dynamodb_table" "tflocks" {
 #------------------------------------------------------
 # GENERATED FOR THE INFRA BUILD ORCHESTRATED LATER ON
 #------------------------------------------------------
-resource "local_file" "state_file_odoo" {
-  file_permission = "0600"
-  content = <<FILE
-terraform {
-  backend "s3" {
-    region         = "${aws_s3_bucket.tfstate.region}"
-    bucket         = "${aws_s3_bucket.tfstate.id}"
-    dynamodb_table = "${aws_dynamodb_table.tflocks.id}"
-    encrypt        = true
-    key            = "${var.infra_region}/${var.infra_stack}/terraform.tfstate"
-  }
-}
-FILE
-  filename = "${path.module}/../odoo/state.tf"
+module "state_file" {
+  source = "./modules/state_file"
+  aws_region = var.aws_region
+  stack_name = var.stack_name
+  bucket_id = aws_s3_bucket.tfstate.id
+  bucket_region = aws_s3_bucket.tfstate.region
+  dynamodb_table_id = aws_dynamodb_table.tflocks.id
 }
 
-resource "local_file" "provider_file_odoo" {
-  file_permission = "0600"
-  content = <<FILE
-provider "aws" {
-  allowed_account_ids = [var.account]
-  region = var.infra_region
-  version = "${var.aws_provider_version}"
-
-  max_retries = 2
-}
-FILE
-  filename = "${path.module}/../odoo/provider.tf"
+module "provider_file" {
+  source = "./modules/provider_file"
+  aws_provider_version = var.aws_provider_version
+  aws_account = var.aws_account
+  aws_region = var.aws_region
+  stack_name = var.stack_name
 }
 
-resource "local_file" "versions_file_odoo" {
-  file_permission = "0600"
-  content = <<FILE
-terraform {
-  required_version = "${var.terraform_version}"
-}
-FILE
-  filename = "${path.module}/../odoo/versions.tf"
+module "versions_file" {
+  source = "./modules/versions_file"
+  terraform_version = var.terraform_version
+  stack_name = var.stack_name
 }
 
-resource "local_file" "variables_file_odoo" {
-  file_permission = "0600"
-  content = <<FILE
-variable "infra_region" {
-  type    = string
-  default = "${var.infra_region}"
+module "variables_file" {
+  source = "./modules/variables_file"
+  stack_name = var.stack_name
 }
-
-variable "infra_stack" {
-  type    = string
-  default = "${var.infra_stack}"
-}
-
-variable "account" {
-  type    = string
-  default = "${var.account}"
-}
-
-variable "aws_provider_version" {
-  type    = string
-  default = "${var.aws_provider_version}"
-}
-FILE
-  filename = "${path.module}/../odoo/variables.tf"
-}
-
 
 #------------------------------------------------------
 # OUTPUTS

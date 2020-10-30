@@ -1,13 +1,6 @@
-variable "terraform_version" {
-  type = string
-  default = ">= 0.12.0, < 0.14.0"
-}
-
-variable "aws_provider_version" {
-  type = string
-  description = "aws provider version - env variable"
-}
-
+resource "local_file" "variables_file_odoo" {
+  file_permission = "0600"
+  content = <<FILE
 variable "aws_account" {
   type = string
   description = "aws account - env variable"
@@ -21,4 +14,7 @@ variable "aws_region" {
 variable "stack_name" {
   type = string
   description = "stack name - env variable"
+}
+FILE
+  filename = "${path.root}/../${var.stack_name}/variables.tf"
 }
