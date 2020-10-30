@@ -4,7 +4,7 @@ resource "local_file" "provider_file" {
 provider "aws" {
   allowed_account_ids = [var.aws_account]
   region = var.aws_region
-  version = "${var.aws_provider_version}"
+  version = var.aws_provider_version
   max_retries = 2
 }
 FILE
