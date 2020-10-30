@@ -17,3 +17,13 @@ variable stack_name {
   type = string
   description = "stack name - env variable"
 }
+
+variable vpc_name {
+  type = string
+  default = "test-network"
+}
+
+variable cluster_name {
+  type = string
+  default = "test-cluster"
+}
