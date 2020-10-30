@@ -27,33 +27,72 @@ resource "aws_dynamodb_table" "tflocks" {
 #------------------------------------------------------
 # GENERATED FOR THE INFRA BUILD ORCHESTRATED LATER ON
 #------------------------------------------------------
-module "state_file" {
-  source = "./modules/state_file"
-  aws_region = var.aws_region
-  stack_name = var.stack_name
-  bucket_id = aws_s3_bucket.tfstate.id
-  bucket_region = aws_s3_bucket.tfstate.region
-  dynamodb_table_id = aws_dynamodb_table.tflocks.id
+resource "local_file" "state_file" {
+  file_permission = "0600"
+  content = <<FILE
+terraform {
+  backend "s3" {
+    region         = "${aws_s3_bucket.tfstate.region}"
+    bucket         = "${aws_s3_bucket.tfstate.id}"
+    dynamodb_table = "${aws_dynamodb_table.tflocks.id}"
+    encrypt        = true
+    key            = "${var.aws_region}/${var.stack_name}/terraform.tfstate"
+  }
+}
+FILE
+  filename = "${path.module}/../${var.stack_name}/state.tf"
 }
 
-module "provider_file" {
-  source = "./modules/provider_file"
-  aws_provider_version = var.aws_provider_version
-  aws_account = var.aws_account
-  aws_region = var.aws_region
-  stack_name = var.stack_name
+resource "local_file" "provider_file" {
+  file_permission = "0600"
+  content = <<FILE
+provider "aws" {
+  allowed_account_ids = [var.account]
+  region = var.infra_region
+  version = "${var.aws_provider_version}"
+
+  max_retries = 2
+}
+FILE
+  filename = "${path.module}/../${var.stack_name}/provider.tf"
 }
 
-module "versions_file" {
-  source = "./modules/versions_file"
-  terraform_version = var.terraform_version
-  stack_name = var.stack_name
+resource "local_file" "versions_file" {
+  file_permission = "0600"
+  content = <<FILE
+terraform {
+  required_version = "${var.terraform_version}"
+}
+FILE
+  filename = "${path.module}/../${var.stack_name}/versions.tf"
 }
 
-module "variables_file" {
-  source = "./modules/variables_file"
-  stack_name = var.stack_name
+resource "local_file" "variables_file" {
+  file_permission = "0600"
+  content = <<FILE
+variable "terraform_version" {
+  type = string
+  default = ">= 0.12.0, < 0.14.0"
 }
+
+variable "aws_account" {
+  type = string
+  description = "aws account - env variable"
+}
+
+variable "aws_region" {
+  type = string
+  description = "aws region - env variable"
+}
+
+variable "stack_name" {
+  type = string
+  description = "stack name - env variable"
+}
+FILE
+  filename = "${path.module}/../${var.stack_name}/variables.tf"
+}
+
 
 #------------------------------------------------------
 # OUTPUTS

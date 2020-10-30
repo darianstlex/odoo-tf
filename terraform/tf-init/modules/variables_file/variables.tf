@@ -1,1 +1,0 @@
-variable "stack_name" {}
