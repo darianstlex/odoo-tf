@@ -31,7 +31,7 @@ resource local_file state_file {
   file_permission = "0600"
   content = <<FILE
 terraform {
-  backend "s3" {
+  backend s3 {
     region = "${aws_s3_bucket.tfstate.region}"
     bucket = "${aws_s3_bucket.tfstate.id}"
     dynamodb_table = "${aws_dynamodb_table.tflocks.id}"
@@ -46,7 +46,7 @@ FILE
 resource local_file provider_file {
   file_permission = "0600"
   content = <<FILE
-provider "aws" {
+provider aws {
   allowed_account_ids = [var.account]
   region = var.infra_region
   version = "${var.aws_provider_version}"
@@ -70,22 +70,22 @@ FILE
 resource local_file variables_file {
   file_permission = "0600"
   content = <<FILE
-variable "terraform_version" {
+variable terraform_version {
   type = string
   default = "${var.terraform_version}"
 }
 
-variable "aws_account" {
+variable aws_account {
   type = string
   description = "aws account - env variable"
 }
 
-variable "aws_region" {
+variable aws_region {
   type = string
   description = "aws region - env variable"
 }
 
-variable "stack_name" {
+variable stack_name {
   type = string
   description = "stack name - env variable"
 }
