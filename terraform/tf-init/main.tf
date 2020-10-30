@@ -32,11 +32,11 @@ resource "local_file" "state_file" {
   content = <<FILE
 terraform {
   backend "s3" {
-    region         = "${aws_s3_bucket.tfstate.region}"
-    bucket         = "${aws_s3_bucket.tfstate.id}"
+    region = "${aws_s3_bucket.tfstate.region}"
+    bucket = "${aws_s3_bucket.tfstate.id}"
     dynamodb_table = "${aws_dynamodb_table.tflocks.id}"
-    encrypt        = true
-    key            = "${var.aws_region}/${var.stack_name}/terraform.tfstate"
+    encrypt = true
+    key = "${var.aws_region}/${var.stack_name}/terraform.tfstate"
   }
 }
 FILE
