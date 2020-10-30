@@ -4,7 +4,7 @@ node_modules
 .tmp
 
 # local env files
-.env
+.env-variables
 .env.local
 .env.*.local
 
