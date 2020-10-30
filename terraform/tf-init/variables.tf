@@ -1,27 +1,24 @@
-variable "terraform_version" {
-  type    = string
+variable terraform_version {
+  type = string
   default = ">= 0.12.0, < 0.14.0"
 }
 
-variable "aws_provider_version" {
-  type    = string
-  default = "3.10.0"
+variable aws_provider_version {
+  type = string
+  description = "aws provider version - env variable"
 }
 
-variable "infra_region" {
-  type    = string
-  default = "eu-west-1"
-  description = "AWS region"
+variable aws_account {
+  type = string
+  description = "aws account - env variable"
 }
 
-variable "infra_stack" {
-  type    = string
-  default = "test_stack"
-  description = "Stack name"
+variable aws_region {
+  type = string
+  description = "aws region - env variable"
 }
 
-variable "account" {
-  type    = string
-  default = "000000000000"
-  description = "AWS account id used for deployment"
+variable stack_name {
+  type = string
+  description = "stack name - env variable"
 }
