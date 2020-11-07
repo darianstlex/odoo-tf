@@ -1,6 +1,6 @@
 variable terraform_version {
   type = string
-  default = ">= 0.12.0, < 0.14.0"
+  default = ">= 0.13.0, < 0.14.0"
 }
 
 variable aws_account {

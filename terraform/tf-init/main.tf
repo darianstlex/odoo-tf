@@ -49,7 +49,6 @@ resource local_file provider_file {
 provider aws {
   allowed_account_ids = [var.aws_account]
   region = var.aws_region
-  version = "${var.aws_provider_version}"
 
   max_retries = 2
 }
@@ -62,6 +61,10 @@ resource local_file versions_file {
   content = <<FILE
 terraform {
   required_version = "${var.terraform_version}"
+
+  required_providers {
+    aws = "${var.aws_provider_version}"
+  }
 }
 FILE
   filename = "${path.module}/../${var.stack_name}/versions.tf"
@@ -91,6 +94,19 @@ variable stack_name {
 }
 FILE
   filename = "${path.module}/../${var.stack_name}/variables.tf"
+}
+
+resource local_file tf_vars_file {
+  file_permission = "0600"
+  content = <<FILE
+# Stack Definition
+stack_name = "${var.stack_name}"
+
+# AWS authentication variables
+aws_account = ""
+aws_region = ""
+FILE
+  filename = "${path.module}/../${var.stack_name}/terraform.tfvars"
 }
 
 

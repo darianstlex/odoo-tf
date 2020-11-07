@@ -4,6 +4,6 @@ terraform {
     bucket = "tfstate-888355548218-eu-west-1"
     dynamodb_table = "tflock-888355548218-eu-west-1"
     encrypt = true
-    key = "eu-west-1/odoo/terraform.tfstate"
+    key = "eu-west-1/erp/terraform.tfstate"
   }
 }
