@@ -11,19 +11,17 @@ resource "aws_vpc" "vpc" {
 
 # create subnets
 resource "aws_subnet" "aws_subnet" {
-  count = 3
+  count = length(data.aws_availability_zones.aws_az.names)
   vpc_id = aws_vpc.vpc.id
   cidr_block = cidrsubnet(aws_vpc.vpc.cidr_block, 8, count.index + 1)
   availability_zone = data.aws_availability_zones.aws_az.names[count.index]
   map_public_ip_on_launch = true
 }
 
-# create internet gateway
 resource "aws_internet_gateway" "aws_igw" {
   vpc_id = aws_vpc.vpc.id
 }
 
-# create routes
 resource "aws_route_table" "aws_route_table" {
   vpc_id = aws_vpc.vpc.id
   route {
@@ -45,9 +43,8 @@ resource "aws_alb" "lb" {
   subnets = aws_subnet.aws_subnet.*.id
 
   security_groups = [
-    aws_security_group.http.id,
-    aws_security_group.rds_sg.id,
-    aws_security_group.egress-all.id
+    aws_security_group.http_sg.id,
+    aws_security_group.egress_all_sg.id
   ]
 
   depends_on = [aws_internet_gateway.aws_igw]
@@ -87,11 +84,11 @@ output "alb_url" {
   value = "http://${aws_alb.lb.dns_name}"
 }
 
-resource "aws_acm_certificate" "app" {
-  domain_name       = "ipuit.tech"
-  validation_method = "DNS"
-}
-
-output "domain_validations" {
-  value = aws_acm_certificate.app.domain_validation_options
-}
+//resource "aws_acm_certificate" "app" {
+//  domain_name       = "ipuit.tech"
+//  validation_method = "DNS"
+//}
+//
+//output "domain_validations" {
+//  value = aws_acm_certificate.app.domain_validation_options
+//}
