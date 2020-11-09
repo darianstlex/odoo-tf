@@ -106,7 +106,7 @@ stack_name = "${var.stack_name}"
 aws_account = ""
 aws_region = ""
 FILE
-  filename = "${path.module}/../${var.stack_name}/terraform.tfvars"
+  filename = "${path.module}/../${var.stack_name}/terraform.tfvars.tpl"
 }
 
 

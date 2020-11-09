@@ -1,5 +1,5 @@
 # Stack Definition
-stack_name = ""
+stack_name = "erp"
 
 # AWS authentication variables
 aws_account = ""
